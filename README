@@ -1,0 +1,27 @@
+Provide 2 git commit hooks for PHP project
+
+1. Relaxed one
+2. Homebase (strict one) (based on phpcs)
+
+
+HOMEBASE FRAMEWORK (phpcs based) git commit hook
+
+
+1. install PHP_CodeSniffer
+   yum install php-pear-PHP-CodeSniffer
+   (or pear install PHP_CodeSniffer)
+
+2. install standard:
+   sudo cp -r Homebase /usr/share/pear/PHP/CodeSniffer/Standards/
+
+
+  Optional: make homebase default
+   sudo phpcs --config-set default_standard Homebase
+
+3. install to git
+   cd $root_of_homebase/.git/hooks
+   ln -s ../../git-hooks/pre-commit
+
+Inspiration
+   http://tydeas.tumblr.com/post/29226598941/git-pre-commit-php-psr-standard
+   http://github.com/klaussilveira/phpcs-psr
