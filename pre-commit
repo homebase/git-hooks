@@ -46,6 +46,49 @@ fi
 # check php files - only for added, copied, or modified php files
 for file in $(git diff --cached --name-only --diff-filter=ACM | grep \.php$ | uniq); do
     if [ -s $file ]; then
+
+      add=""
+      # strip tailing whitespace
+      space=$(grep -m 1 " $" $file)
+      if [ -n "$space" ]; then
+          sed -i 's/[[:space:]]*$//' "$file"
+          add=1
+      fi
+
+      # strip tabs
+      tab=$(grep -m 1 -P "\t" $file)
+      if [ -n "$tab" ]; then
+          sed -i 's/\t/    /g' "$file"
+          add=1
+      fi
+
+      # " if(" => " if ("
+      fix=$(grep -m 1 ' if(' $file)
+      if [ -n "$fix" ]; then
+          sed -i 's/ if(/ if (/' "$file"
+          add=1
+      fi
+      # " if ( " => " if ("
+      fix=$(grep -m 1 ' if ( ' $file)
+      if [ -n "$fix" ]; then
+          sed -i 's/ if ( / if (/' "$file"
+          add=1
+      fi
+
+      # " foreach(" => " foreach ("
+      fix=$(grep -m 1 ' foreach(' $file)
+      if [ -n "$fix" ]; then
+          sed -i 's/ foreach(/ foreach (/' "$file"
+          add=1
+      fi
+
+      # array() => []
+      fix=$(grep -P -m 1 '\Warray\(\)' $file)
+      if [ -n "$fix" ]; then
+          perl -i -pe 's/(\W)array\(\)/$1\[]/' "$file"
+          add=1
+      fi
+
       # check php syntax
       result=$(php -l $file)
       if [ $? -ne 0 ]; then
@@ -53,29 +96,6 @@ for file in $(git diff --cached --name-only --diff-filter=ACM | grep \.php$ | un
           echo $result
           exit 1
       fi
-
-      add = ""
-      # strip tailing whitespace
-      space=$(grep -m 1 " $" $file)
-      if [ -n "$space" ]; then
-          sed -i 's/[[:space:]]*$//' "$file"
-          add = 1
-      fi
-
-      # strip tabs
-      tab=$(grep -m 1 -P "\t" $file)
-      if [ -n "$tab" ]; then
-          sed -i 's/\t/    /g' "$file"
-          add = 1
-      fi
-
-      # "if(" => "if ("
-      fix=$(grep -m 1 "if(" $file)
-      if [ -n "$fix" ]; then
-          sed -i 's/if\(/if (/' "$file"
-          add = 1
-      fi
-
 
       # if file cleaned, add back to git
       if [ -n "$add" ]; then
