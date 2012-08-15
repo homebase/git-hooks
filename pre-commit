@@ -54,20 +54,31 @@ for file in $(git diff --cached --name-only --diff-filter=ACM | grep \.php$ | un
           exit 1
       fi
 
+      add = ""
       # strip tailing whitespace
       space=$(grep -m 1 " $" $file)
       if [ -n "$space" ]; then
           sed -i 's/[[:space:]]*$//' "$file"
+          add = 1
       fi
 
       # strip tabs
       tab=$(grep -m 1 -P "\t" $file)
       if [ -n "$tab" ]; then
           sed -i 's/\t/    /g' "$file"
+          add = 1
       fi
 
+      # "if(" => "if ("
+      fix=$(grep -m 1 "if(" $file)
+      if [ -n "$fix" ]; then
+          sed -i 's/if\(/if (/' "$file"
+          add = 1
+      fi
+
+
       # if file cleaned, add back to git
-      if [ -n "$space" -o -n "$tab" ]; then
+      if [ -n "$add" ]; then
           echo "$file cleaned, adding back to git"
           git add $file
       fi
