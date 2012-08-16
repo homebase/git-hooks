@@ -1,0 +1,16 @@
+#!/bin/sh
+
+cd ..
+git_root=$(git rev-parse --show-toplevel)
+
+if [ ! $git_root ]; then
+  echo "can't find git-root"
+  exit 1;
+fi;
+
+cd $git_root/.git/hooks
+if [ -e pre-commit ]; then
+    mv pre-commit pre-commit.old
+fi
+
+ln -s ../../git-hooks/pre-commit

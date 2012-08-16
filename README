@@ -6,11 +6,13 @@ Provide 2 git commit hooks for PHP project
 
 = GIT HOOK INSTALL:
 
-  git clone $PROJECT
-  git clone https://github.com/homebase/git-hooks.git
-  cd .git/hooks
-  ln -s ../../git-hooks/pre-commit
+  RUN ./setup-git-hook script
 
+
+
+
+== HOMEBASE GIT HOOK 
+// STILL IN PROGRESS 
 
 HOMEBASE FRAMEWORK (phpcs based) git commit hook
 
