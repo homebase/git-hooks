@@ -55,6 +55,8 @@ class Homebase_Sniffs_NamingConventions_ValidFunctionNameSniff extends PEAR_Snif
         $errorData = array($className.'::'.$methodName);
 
         // Is this a magic method. IE. is prefixed with "__".
+        if (preg_match('|^__|', $methodName) !== 0)
+           return;
         /*
         if (preg_match('|^__|', $methodName) !== 0) {
             $magicPart = substr($methodName, 2);
