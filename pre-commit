@@ -29,11 +29,7 @@ if [ "$allownonascii" != "true" ] &&
 	  LC_ALL=C tr -d '[ -~]\0')"
 then
 	echo "Error: Attempt to add a non-ascii file name."
-	echo
-	echo "This can cause problems if you want to work"
-	echo "with people on other platforms."
-	echo
-	echo "To be portable it is advisable to rename the file ..."
+	echo "rename the file ..."
 	echo
 	echo "If you know what you are doing you can disable this"
 	echo "check using:"
@@ -82,11 +78,15 @@ for file in $(git diff --cached --name-only --diff-filter=ACM | grep \.php$ | un
           add=1
       fi
 
-      # array() => []
-      fix=$(grep -P -m 1 '\Warray\(\)' $file)
-      if [ -n "$fix" ]; then
-          perl -i -pe 's/(\W)array\(\)/$1\[]/' "$file"
-          add=1
+      php54=$(php -v | grep -o "PHP 5.4")
+
+      if [ php54 ]; then
+          # array() => []
+         fix=$(grep -P -m 1 '\Warray\(\)' $file)
+         if [ -n "$fix" ]; then
+            perl -i -pe 's/(\W)array\(\)/$1\[]/' "$file"
+            add=1
+         fi
       fi
 
       # check php syntax
