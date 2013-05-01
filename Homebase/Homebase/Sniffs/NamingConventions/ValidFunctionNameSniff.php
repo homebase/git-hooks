@@ -52,7 +52,7 @@ class Homebase_Sniffs_NamingConventions_ValidFunctionNameSniff extends PEAR_Snif
         }
 
         $className = $phpcsFile->getDeclarationName($currScope);
-        $errorData = array($className.'::'.$methodName);
+        $errorData = [$className.'::'.$methodName];
 
         // Is this a magic method. IE. is prefixed with "__".
         if (preg_match('|^__|', $methodName) !== 0)
